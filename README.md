@@ -126,5 +126,13 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ## 💡 Notes
 
 - **GPU**: This project supports training on GPU if available (using CUDA).
+
+## 📊 Loss and Accuracy Plots
+
+### Loss Plot
+![Loss Plot](./evaluation/loss.png)
+
+### Accuracy Plot
+![Accuracy Plot](./evaluation/accuracy.png)
 - **Model Checkpoints**: If training is interrupted, you can resume from the last checkpoint using the `--checkpoint` argument.
 - **Inference**: The `test_cnn.py` script uses OpenCV for loading and processing images before feeding them into the trained model.
