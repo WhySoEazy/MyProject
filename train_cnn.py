@@ -1,4 +1,3 @@
-from model import SimpleNeuralNetwork
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch
@@ -121,10 +120,12 @@ if __name__ == "__main__":
         start_epoch = checkpoint['epoch']
         model.load_state_dict(checkpoint['model'])
         optimizer.load_state_dict(checkpoint['optimizer'])
+        best_acc = checkpoint["best_acc"]
     else:
         start_epoch = 0
+        best_acc = 0
 
-    for epoch in range(start_epoch , arg.epochs): 
+    for epoch in range(start_epoch , arg.epochs + start_epoch): 
         model.train()
         progress_bar = tqdm(training_dataloader)
         for iter , (images , labels) in enumerate(progress_bar):
@@ -133,7 +134,7 @@ if __name__ == "__main__":
             #forward pass
             outputs = model(images)
             loss = criterion(outputs , labels)
-            progress_bar.set_description("Epoch {}/{} , Iteration {}/{} , Loss {:.3f}".format(epoch + 1 , num_epochs , iter + 1 , num_iters , loss))
+            progress_bar.set_description("Epoch {}/{} , Iteration {}/{} , Loss {:.3f}".format(epoch + 1 , arg.epochs + start_epoch , iter + 1 , num_iters , loss))
             writer.add_scalar("Train/Loss" , loss , epoch*num_iters+iter)
             #backward and optimize
             optimizer.zero_grad() #k cần lưu trữ gradient
@@ -166,19 +167,22 @@ if __name__ == "__main__":
         print("Epoch: {} , Accuracy Score: {}".format(epoch+1 , accuracy))
         writer.add_scalar("Validation/Accuracy" , accuracy , epoch)
 
-        checkpoint = {
-            "epoch": epoch + 1,
-            "model": model.state_dict(),
-            "optimizer": optimizer.state_dict()
-        }
-        torch.save(checkpoint, "{}/last_cnn.pt".format(arg.trained_model))
-        
-        best_acc = 0
         if accuracy > best_acc:
             checkpoint = {
                 "epoch": epoch + 1,
+                "best_acc": best_acc,
                 "model": model.state_dict(),
                 "optimizer": optimizer.state_dict()
             }
             torch.save(checkpoint, "{}/best_cnn.pt".format(arg.trained_model))
             best_acc = accuracy
+
+        checkpoint = {
+            "epoch": epoch + 1,
+            "best_acc": best_acc,
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict()
+        }
+        torch.save(checkpoint, "{}/last_cnn.pt".format(arg.trained_model))
+        
+        print("Best accuracy: {}".format(best_acc))
