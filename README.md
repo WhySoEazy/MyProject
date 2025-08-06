@@ -113,14 +113,14 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 ```
 /MyProject
-    ├── trained_model/           # Directory for saving trained models and checkpoints
+    ├── evaluation/              # Images of model's performance
+    ├── small_dog_cat_dataset/   # Dataset
     ├── tensorboard/             # Directory for storing TensorBoard logs
-    ├── dogs_cats_dataset.py     # Dataset handler script
+    ├── trained_model/           # Directory for saving trained models and checkpoints
+    ├── dog_cat_dataset.py       # Dataset handler script
     ├── model.py                 # Simple CNN architecture
     ├── train_cnn.py             # Training script
-    ├── test_cnn.py              # Evaluation script
-    ├── test_cnn.py              # Inference script for classifying new images
-    └── requirements.txt         # List of Python dependencies
+    └── test_cnn.py              # Inference script for classifying new images
 ```
 
 ## 💡 Notes
