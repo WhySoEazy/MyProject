@@ -2,7 +2,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch
 from dogs_cats_dataset import DogsCatsDataset
-from torchvision.transforms import ToTensor , Resize , Compose , Normalize
+from torchvision.transforms import ToTensor , Resize , Compose , Normalize , ColorJitter , RandomAffine
 from model import SimpleCNN
 from argparse import ArgumentParser
 from torch.utils.tensorboard import SummaryWriter
@@ -12,6 +12,8 @@ import os
 import shutil
 import matplotlib.pyplot as plt
 import numpy as np
+from torchsummary import summary
+import cv2
 
 def get_args():
     parse = ArgumentParser(description="CNN Training")
@@ -39,6 +41,10 @@ def get_args():
     parse.add_argument("--checkpoint",
                        type=str,
                        default=None)
+
+    parse.add_argument("--image_size",
+                       type=int,
+                       default=224)
     
     args = parse.parse_args()
 
@@ -78,12 +84,29 @@ if __name__ == "__main__":
     num_epochs = arg.epochs
     batch_size = arg.batchs
 
-    transform = Compose([
-        Resize((224 , 224)),
+    train_transform = Compose([
+        RandomAffine(
+            degrees=(-5 , 5),
+            translate=(0.05 , 0.05),
+            scale=(0.85 , 1.15),
+            shear=5
+        ),
+        ColorJitter(
+            brightness=0.125,  
+            contrast=0.5,   
+            saturation=0.25,  
+            hue=0.5
+        ),
+        Resize((arg.image_size , arg.image_size)),
         ToTensor()
     ])
 
-    training_data = DogsCatsDataset(root=arg.root , train=True , transform = transform)
+    test_transform = Compose([
+        Resize((arg.image_size , arg.image_size)),
+        ToTensor()
+    ])
+
+    training_data = DogsCatsDataset(root=arg.root , train=True , transform = train_transform)
 
     training_dataloader = DataLoader(
         dataset=training_data,
@@ -93,7 +116,7 @@ if __name__ == "__main__":
         drop_last=False
     )
 
-    testing_data = DogsCatsDataset(root=arg.root , train=False , transform = transform)
+    testing_data = DogsCatsDataset(root=arg.root , train=False , transform = test_transform)
 
     testing_dataloader = DataLoader(
         dataset=testing_data,
@@ -114,6 +137,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters() , lr=0.001 , momentum=0.9)
     num_iters = len(training_dataloader)
+    summary(model , (3 , arg.image_size , arg.image_size))
 
     if arg.checkpoint:
         checkpoint = torch.load(arg.checkpoint)
