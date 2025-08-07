@@ -138,9 +138,9 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ### Accuracy Plot
 ![Accuracy Plot](./evaluation/accuracy.png)
 
-## Model Summary
+## 🖥️ Model Summary
 
-```
+```bash
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
 ├─Sequential: 1-1                        [-1, 8, 112, 112]         --
@@ -205,4 +205,5 @@ Input size (MB): 0.57
 Forward/backward pass size (MB): 23.75
 Params size (MB): 15.42
 Estimated Total Size (MB): 39.74
-==========================================================================================```
+==========================================================================================
+```
