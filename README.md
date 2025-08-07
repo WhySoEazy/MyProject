@@ -140,7 +140,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 ## 🖥️ Model Summary
 
-```bash
+```
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
 ├─Sequential: 1-1                        [-1, 8, 112, 112]         --
